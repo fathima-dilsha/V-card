@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"  // Changed from mysql
+   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  fullName  String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255) // Hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  vCard     VCard?   // One-to-One: Each user has ONE vCard
+  sessions  Session[] // One-to-Many: User can have multiple sessions
+
+  @@index([email])
+  @@map("users")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique @db.VarChar(500)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+model VCard {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique // One-to-One relationship with User
+  name        String   @db.VarChar(100)
+  jobTitle    String?  @db.VarChar(100)
+  companyName String?  @db.VarChar(100)
+  heading     String?  @db.VarChar(255)
+  description String?  @db.Text
+  videoUrl    String?  @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contacts    ContactDetail[]   // One-to-Many
+  socialLinks SocialLink[]      // One-to-Many
+  webLinks    WebLink[]         // One-to-Many
+
+  @@index([userId])
+  @@map("vcards")
+}
+
+model ContactDetail {
+  id      Int         @id @default(autoincrement())
+  vCardId Int
+  type    ContactType // MOBILE, EMAIL, ADDRESS
+  value   String      @db.VarChar(500)
+  label   String?     @db.VarChar(50) 
+  isPrimary Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relationships
+  vCard   VCard       @relation(fields: [vCardId], references: [id], onDelete: Cascade)
+
+  @@index([vCardId])
+  @@index([type])
+  @@map("contact_details")
+}
+
+enum ContactType {
+  MOBILE
+  EMAIL
+  ADDRESS
+}
+
+model SocialLink {
+  id        Int             @id @default(autoincrement())
+  vCardId   Int
+  platform  SocialPlatform
+  url       String          @db.VarChar(500)
+  username  String?         @db.VarChar(100) 
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  // Relationships
+  vCard     VCard           @relation(fields: [vCardId], references: [id], onDelete: Cascade)
+
+  @@index([vCardId])
+  @@index([platform])
+  @@map("social_links")
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  FACEBOOK
+  LINKEDIN
+  TWITTER
+  YOUTUBE
+  TIKTOK
+  GITHUB
+  PINTEREST
+  SNAPCHAT
+  WHATSAPP
+  TELEGRAM
+  OTHER
+}
+
+
+model WebLink {
+  id        Int      @id @default(autoincrement())
+  vCardId   Int
+  title     String   @db.VarChar(200)
+  url       String   @db.VarChar(500)
+  order     Int      @default(0) 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  vCard     VCard    @relation(fields: [vCardId], references: [id], onDelete: Cascade)
+
+  @@index([vCardId])
+  @@map("web_links")
+}
+
