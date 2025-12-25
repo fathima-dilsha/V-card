@@ -76,6 +76,7 @@ export const useCreateContact = () => {
         mutationFn: createContact,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [CONTACTS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Contact added successfully!')
         },
         onError: (error: any) => {
@@ -91,6 +92,7 @@ export const useUpdateContact = () => {
         mutationFn: ({ contactId, data }: any) => updateContact(contactId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [CONTACTS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Contact updated successfully!')
         },
         onError: (error: any) => {
@@ -106,6 +108,7 @@ export const useDeleteContact = () => {
         mutationFn: deleteContact,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [CONTACTS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Contact deleted successfully!')
         },
         onError: (error: any) => {
@@ -131,6 +134,7 @@ export const useCreateSocialLink = () => {
         mutationFn: createSocialLink,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [SOCIAL_LINKS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Social link added successfully!')
         },
         onError: (error: any) => {
@@ -147,6 +151,7 @@ export const useUpdateSocialLink = () => {
             updateSocialLink(socialLinkId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [SOCIAL_LINKS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Social link updated successfully!')
         },
         onError: (error: any) => {
@@ -162,6 +167,7 @@ export const useDeleteSocialLink = () => {
         mutationFn: deleteSocialLink,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [SOCIAL_LINKS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Social link deleted successfully!')
         },
         onError: (error: any) => {
@@ -187,6 +193,7 @@ export const useCreateWebLink = () => {
         mutationFn: createWebLink,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [WEB_LINKS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Web link added successfully!')
         },
         onError: (error: any) => {
@@ -202,6 +209,7 @@ export const useUpdateWebLink = () => {
         mutationFn: ({ webLinkId, data }: any) => updateWebLink(webLinkId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [WEB_LINKS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Web link updated successfully!')
         },
         onError: (error: any) => {
@@ -217,6 +225,7 @@ export const useDeleteWebLink = () => {
         mutationFn: deleteWebLink,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [WEB_LINKS_KEY] })
+            queryClient.invalidateQueries({ queryKey: [VCARD_KEY] })
             toast.success('Web link deleted successfully!')
         },
         onError: (error: any) => {

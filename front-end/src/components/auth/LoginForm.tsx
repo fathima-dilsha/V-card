@@ -71,7 +71,7 @@ export default function LoginForm({ onSubmit }: LoginFormProps) {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="w-full bg-black hover:bg-black text-white"
       >
         {loading ? "Logging in..." : "Login"}
       </Button>

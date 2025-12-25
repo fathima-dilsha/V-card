@@ -197,11 +197,11 @@ export default function EditVCardPage() {
               )}
             </div>
 
-            <div className="flex gap-4 pt-6">
+            <div className="grid grid-cols-2 gap-4 pt-6">
               <Button
                 type="submit"
                 disabled={updateVCardMutation.isPending}
-                className="flex-1"
+
               >
                 {updateVCardMutation.isPending ? (
                   <>

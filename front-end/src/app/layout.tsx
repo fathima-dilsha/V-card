@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import './globals.css'
 import Providers from "./providers";
 import { Toaster } from "sonner";
 
@@ -16,7 +16,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <Providers>{children}
+        <Providers>
+          {children}
           <Toaster />
         </Providers>
       </body>

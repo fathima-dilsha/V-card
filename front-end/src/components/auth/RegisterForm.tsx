@@ -60,20 +60,22 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-1">Full Name</label>
+        <label className="block text-sm font-medium mb-1">Full Name <span className="text-red-600">*</span></label>
         <input
           type="text"
           name="fullName"
           value={formData.fullName}
           onChange={handleChange}
           placeholder="Enter your full name"
+          required
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Email</label>
+        <label className="block text-sm font-medium mb-1">Email <span className="text-red-600">*</span></label>
         <input
+          required
           type="email"
           name="email"
           value={formData.email}
@@ -84,8 +86,9 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Password</label>
+        <label className="block text-sm font-medium mb-1">Password <span className="text-red-600">*</span></label>
         <input
+          required
           type="password"
           name="password"
           value={formData.password}
@@ -97,11 +100,12 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
 
       <div>
         <label className="block text-sm font-medium mb-1">
-          Confirm Password
+          Confirm Password <span className="text-red-600">*</span>
         </label>
         <input
           type="password"
           name="confirmPassword"
+          required
           value={formData.confirmPassword}
           onChange={handleChange}
           placeholder="Confirm password"
@@ -114,7 +118,7 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="w-full bg-black hover:bg-black text-white"
       >
         {loading ? "Registering..." : "Register"}
       </Button>

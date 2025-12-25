@@ -23,11 +23,11 @@ export const useLogin = () => {
         mutationFn: loginUser,
         onSuccess: (data) => {
             LocalStorage.setItem('auth_token', data.token)
-            LocalStorage.setItem('user', {
+            LocalStorage.setItem('user', JSON.stringify({
                 id: data.id,
                 fullName: data.fullName,
                 email: data.email,
-            })
+            }))
             toast.success('Login successful!')
             router.push('/dashboard')
         },

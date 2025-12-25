@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/useAuth";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, Phone, MapPin, Globe, Share2, Link2, Video, Briefcase, Building2, User, Edit, LogOut, ExternalLink, Star } from "lucide-react";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { useGetCompleteVCard } from "@/hooks/useVCard";
 
@@ -35,122 +34,165 @@ export default function DashboardPage() {
     await logoutMutation.mutateAsync();
   };
 
+  const getContactIcon = (type: string) => {
+    const lowerType = type.toLowerCase();
+    if (lowerType.includes('email')) return <Mail className="w-4 h-4" />;
+    if (lowerType.includes('phone') || lowerType.includes('mobile')) return <Phone className="w-4 h-4" />;
+    if (lowerType.includes('address') || lowerType.includes('location')) return <MapPin className="w-4 h-4" />;
+    return <Globe className="w-4 h-4" />;
+  };
+
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <Loader2 className="animate-spin w-8 h-8 text-blue-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Welcome, {user?.fullName}!</p>
-          </div>
-          <div className="flex gap-3">
-            <Link href="/vcard/edit">
-              <Button variant="outline">Edit vCard</Button>
-            </Link>
-            <Button variant="destructive" onClick={handleLogout}>
-              Logout
-            </Button>
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Your Digital Business Card</h1>
+              <p className="text-sm text-gray-600 mt-1">Manage your professional profile</p>
+            </div>
+            <div className="flex gap-2 sm:gap-3">
+              <Link href="/vcard/edit">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Edit className="w-4 h-4" />
+                  <span className="hidden sm:inline">Edit</span>
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50">
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {isLoadingVCard ? (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="animate-spin mr-2" />
-            <span>Loading vCard...</span>
+          <div className="flex flex-col justify-center items-center py-20">
+            <Loader2 className="animate-spin w-10 h-10 text-blue-600 mb-4" />
+            <span className="text-gray-600">Loading your vCard...</span>
           </div>
         ) : vcard ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* vCard Preview */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Complete vCard in Single Card */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-lg p-8">
-                <h2 className="text-4xl font-bold text-gray-800 mb-2">
-                  {vcard.name}
-                </h2>
-                {vcard.jobTitle && (
-                  <p className="text-xl text-gray-600 mb-1">{vcard.jobTitle}</p>
-                )}
-                {vcard.companyName && (
-                  <p className="text-lg text-gray-500 mb-4">
-                    @ {vcard.companyName}
-                  </p>
-                )}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                {/* Profile Header */}
+                <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-200">
+                  <User className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-xl font-semibold text-gray-900">Complete Profile</h3>
+                </div>
 
-                {vcard.heading && (
-                  <div className="mb-6 pb-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                      Heading
-                    </h3>
-                    <p className="text-gray-600">{vcard.heading}</p>
+                {/* Profile Information */}
+                <div className="mb-8">
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                      {vcard.name?.charAt(0) || 'U'}
+                    </div>
+                    <div className="flex-1">
+                      <div className="mb-3">
+                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Full Name</label>
+                        <h2 className="text-3xl font-bold text-gray-900 mt-1">
+                          {vcard.name}
+                        </h2>
+                      </div>
+                      {vcard.jobTitle && (
+                        <div className="mb-2">
+                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Job Title</label>
+                          <div className="flex items-center gap-2 text-gray-700 mt-1">
+                            <Briefcase className="w-4 h-4" />
+                            <span className="text-lg font-medium">{vcard.jobTitle}</span>
+                          </div>
+                        </div>
+                      )}
+                      {vcard.companyName && (
+                        <div>
+                          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Company</label>
+                          <div className="flex items-center gap-2 text-gray-600 mt-1">
+                            <Building2 className="w-4 h-4" />
+                            <span>{vcard.companyName}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
 
+                  {vcard.heading && (
+                    <div className="mt-4">
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Professional Headline</label>
+                      <p className="text-gray-700 text-lg font-medium italic mt-2">
+                        "{vcard.heading}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* About Section */}
                 {vcard.description && (
-                  <div className="mb-6 pb-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                      About
-                    </h3>
-                    <p className="text-gray-600 whitespace-pre-wrap">
+                  <div className="mb-8 pb-8 border-b border-gray-200">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 block">About Me</label>
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                       {vcard.description}
                     </p>
                   </div>
                 )}
 
+                {/* Video Section */}
                 {vcard.videoUrl && (
-                  <div className="mb-6 pb-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                      Video
-                    </h3>
+                  <div className="mb-8 pb-8 border-b border-gray-200">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 block">Introduction Video</label>
                     <a
                       href={vcard.videoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline break-all"
+                      className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 hover:underline break-all"
                     >
-                      {vcard.videoUrl}
+                      <Video className="w-4 h-4" />
+                      <span>Watch video</span>
+                      <ExternalLink className="w-4 h-4" />
                     </a>
                   </div>
                 )}
 
                 {/* Contact Details */}
                 {vcard.contacts && vcard.contacts.length > 0 && (
-                  <div className="mb-6 pb-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                      Contact Details
-                    </h3>
-                    <div className="space-y-2">
+                  <div className="mb-8 pb-8 border-b border-gray-200">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 block">Contact Information</label>
+                    <div className="space-y-3">
                       {vcard.contacts.map((contact: any) => (
                         <div
                           key={contact.id}
-                          className="flex justify-between items-center p-3 bg-gray-50 rounded"
+                          className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                         >
-                          <div>
-                            <p className="font-medium text-gray-700">
-                              {contact.type}
-                            </p>
-                            <p className="text-gray-600">{contact.value}</p>
+                          <div className="mt-1 text-blue-600">
+                            {getContactIcon(contact.type)}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="font-semibold text-gray-900">{contact.type}</p>
+                              {contact.isPrimary && (
+                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                                  <Star className="w-3 h-3 fill-current" />
+                                  Primary
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-gray-700 mt-1">{contact.value}</p>
                             {contact.label && (
-                              <p className="text-sm text-gray-500">
-                                {contact.label}
-                              </p>
+                              <p className="text-sm text-gray-500 mt-1">{contact.label}</p>
                             )}
                           </div>
-                          {contact.isPrimary && (
-                            <span className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded">
-                              Primary
-                            </span>
-                          )}
                         </div>
                       ))}
                     </div>
@@ -159,27 +201,25 @@ export default function DashboardPage() {
 
                 {/* Social Links */}
                 {vcard.socialLinks && vcard.socialLinks.length > 0 && (
-                  <div className="mb-6 pb-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                      Social Links
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3">
+                  <div className="mb-8 pb-8 border-b border-gray-200">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 block">Social Media</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {vcard.socialLinks.map((link: any) => (
                         <a
                           key={link.id}
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-3 bg-gray-50 rounded hover:bg-gray-100 transition"
+                          className="flex items-center gap-3 p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg hover:from-blue-50 hover:to-indigo-50 transition-all border border-gray-200 hover:border-blue-300 group"
                         >
-                          <p className="font-medium text-gray-700">
-                            {link.platform}
-                          </p>
-                          {link.username && (
-                            <p className="text-sm text-gray-600">
-                              @{link.username}
-                            </p>
-                          )}
+                          <Globe className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900">{link.platform}</p>
+                            {link.username && (
+                              <p className="text-sm text-gray-600">@{link.username}</p>
+                            )}
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
                         </a>
                       ))}
                     </div>
@@ -189,28 +229,24 @@ export default function DashboardPage() {
                 {/* Web Links */}
                 {vcard.webLinks && vcard.webLinks.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                      Web Links
-                    </h3>
-                    <div className="space-y-2">
+                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 block">Web Links</label>
+                    <div className="space-y-3">
                       {vcard.webLinks
-                        .sort(
-                          (a: any, b: any) => (a.order || 0) - (b.order || 0)
-                        )
+                        .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
                         .map((link: any) => (
                           <a
                             key={link.id}
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block p-3 bg-blue-50 rounded hover:bg-blue-100 transition"
+                            className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all border border-blue-200 hover:border-blue-300 group"
                           >
-                            <p className="font-medium text-blue-700">
-                              {link.title}
-                            </p>
-                            <p className="text-sm text-blue-600 break-all">
-                              {link.url}
-                            </p>
+                            <Link2 className="w-5 h-5 text-blue-600" />
+                            <div className="flex-1">
+                              <p className="font-semibold text-blue-900">{link.title}</p>
+                              <p className="text-sm text-blue-700 break-all">{link.url}</p>
+                            </div>
+                            <ExternalLink className="w-4 h-4 text-blue-600" />
                           </a>
                         ))}
                     </div>
@@ -219,42 +255,60 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Quick Actions */}
+            {/* Quick Actions Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-lg p-6 sticky top-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <Edit className="w-5 h-5 text-blue-600" />
                   Quick Actions
                 </h3>
                 <div className="space-y-2">
                   <Link href="/vcard/edit" className="block">
-                    <Button variant="outline" className="w-full justify-start">
-                      Edit vCard
+                    <Button variant="outline" className="w-full justify-start gap-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300">
+                      <Edit className="w-4 h-4" />
+                      Edit Profile Details
                     </Button>
                   </Link>
                   <Link href="/vcard/contacts" className="block">
-                    <Button variant="outline" className="w-full justify-start">
-                      Manage Contacts
+                    <Button variant="outline" className="w-full justify-start gap-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300">
+                      <Phone className="w-4 h-4" />
+                      Manage Contact Info
                     </Button>
                   </Link>
                   <Link href="/vcard/social-links" className="block">
-                    <Button variant="outline" className="w-full justify-start">
-                      Manage Social Links
+                    <Button variant="outline" className="w-full justify-start gap-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300">
+                      <Share2 className="w-4 h-4" />
+                      Manage Social Media
                     </Button>
                   </Link>
                   <Link href="/vcard/web-links" className="block">
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start gap-2 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300">
+                      <Link2 className="w-4 h-4" />
                       Manage Web Links
                     </Button>
                   </Link>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <p className="text-xs text-gray-500 text-center">
+                    Tip: Keep your vCard updated to make a great impression
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
-            <p className="text-gray-600 mb-6">You don't have a vCard yet.</p>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center max-w-2xl mx-auto">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6">
+              <User className="w-10 h-10" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">Create Your Digital Business Card</h2>
+            <p className="text-gray-600 mb-6">You haven't created your vCard yet. Get started now and share your professional profile with the world!</p>
             <Link href="/vcard/create">
-              <Button size="lg">Create Your vCard</Button>
+              <Button size="lg" className="gap-2">
+                <Edit className="w-5 h-5" />
+                Create Your vCard
+              </Button>
             </Link>
           </div>
         )}
